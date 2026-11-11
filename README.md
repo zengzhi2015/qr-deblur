@@ -6,7 +6,9 @@ Official inference implementation for **Decoding Motion-Blurred QR Codes: Motion
 - **Network weights (separate download):** [Google Drive (`QR_DEB_TRL_WEIGHTS`)](https://drive.google.com/drive/folders/16fElOj7ZKO8GkIW4ZtmDDfpUHBI10mL3?usp=sharing) (MIT License)
 - **Photograph & sensor benchmark (separate download):** [Google Drive (`QR_DEB_TRL_DATASET`)](https://drive.google.com/drive/folders/1tKBJlFb34EyO09QVZq4hT7_R2pXC0vUD) (CC BY 4.0)
 
-The two network checkpoints and the 955-photograph handheld benchmark are distributed via the Google Drive folders above.
+The two network checkpoints and the 955-photograph real motion-blurred benchmark are distributed via the Google Drive folders above.
+
+In automated manufacturing, logistics, and inspection, maintaining a compact and continuous workflow requires reading QR codes on the fly without pausing or slowing down the relative motion, while active strobe illumination is often avoided in favour of continuous ambient light. Under these conditions, relative three-dimensional rigid motion between the camera and the planar target inevitably introduces spatially varying motion blur. `qr-deblur` recovers the exact QR payload through explicit corner-trajectory estimation, tolerance-guided candidate search, alternating image-and-path fitting, and regularised linear inversion.
 
 ---
 
@@ -142,9 +144,11 @@ python -m qrpipe --controls
 
 ## 5. Download the Photograph Benchmark
 
-The handheld motion-blurred QR benchmark (`QR_DEB_TRL_DATASET`, CC BY 4.0) is hosted on Google Drive:
+The real motion-blurred QR benchmark (`QR_DEB_TRL_DATASET`, CC BY 4.0) is hosted on Google Drive:
 
 - **Dataset folder:** [https://drive.google.com/drive/folders/1tKBJlFb34EyO09QVZq4hT7_R2pXC0vUD](https://drive.google.com/drive/folders/1tKBJlFb34EyO09QVZq4hT7_R2pXC0vUD)
+
+By the rigid-plane relative-motion equivalence in the paper, sweeping a camera past a stationary card reproduces the exact same planar exposure operator as a target moving past a fixed camera, while enabling paired static reference captures for unambiguous ground-truth payload registration and diverse 3D acceleration profiles across four camera models and five operators.
 
 Download and unzip the folder anywhere on disk (it does not need to be inside this repository). Keep its directory layout intact:
 
@@ -160,12 +164,12 @@ QR_DEB_TRL_DATASET/
 │   │   ├── zoom/
 │   │   ├── rotation/
 │   │   └── free/
-│   │       ├── s01_translation_003_reference.jpg    # still capture of the same card
-│   │       └── s01_translation_003_observation.jpg  # handheld motion-blurred capture
+│   │       ├── s01_translation_003_reference.jpg    # paired static capture of the same card
+│   │       └── s01_translation_003_observation.jpg  # controlled relative-motion blurred capture
 └── sensors/
 ```
 
-The dataset contains 1,195 photograph pairs in total. The default evaluation benchmark consists of the **955 motion-blurred observation photographs** (`translation`: 241, `zoom`: 239, `rotation`: 239, `free`: 236) where `role == "observation"` and `included_in_eval == "true"` in `capture_metadata.csv`.
+The dataset contains 1,195 photograph pairs in total. The default evaluation benchmark consists of the **955 motion-blurred observation photographs** (lateral translation `translation`: 241, axial approach/retreat `zoom`: 239, in-plane rotation `rotation`: 239, coupled 3D motion `free`: 236) where `role == "observation"` and `included_in_eval == "true"` in `capture_metadata.csv`.
 
 ---
 
@@ -242,7 +246,7 @@ and prints total photographs, decoded count, and exact ground-truth match count.
 
 ## Citation
 
-If you use this code, the network weights, or the handheld QR motion benchmark, please cite our paper, dataset, and code release:
+If you use this code, the network weights, or the real motion-blurred QR benchmark, please cite our paper, dataset, and code release:
 
 ```bibtex
 @misc{zeng2026code,
@@ -255,7 +259,7 @@ If you use this code, the network weights, or the handheld QR motion benchmark, 
 
 @misc{zeng2026data,
   author       = {Zeng, Zhi and Su, Qiaochen and Xiong, Si and Wang, Yaoqi and Cai, Yufei and Liu, Heng and Hu, Yi},
-  title        = {Handheld {QR} Motion Photographs},
+  title        = {Real Motion-Blurred {QR} Photographs},
   year         = {2026},
   howpublished = {Dataset (CC BY 4.0)},
   url          = {https://drive.google.com/drive/folders/1tKBJlFb34EyO09QVZq4hT7_R2pXC0vUD}
